@@ -7,16 +7,19 @@ import Header from './Layouts/header.vue';
 
   <NuxtLayout >
     <Header ></Header>
-    <NuxtPage style="padding-top: 100px;" />
+    <NuxtPage />
     <Footer></Footer>
   </NuxtLayout>
 
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
+  font-family: 'Commissioner', sans-serif; 
 }
 
 body {

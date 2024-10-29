@@ -9,7 +9,7 @@
           position: fixed;
           z-index: 10;
         "
-        elevation="1"
+        elevation="0"
       >
         <div
           class="w-100 h-100 d-flex justify-space-between align-center px-16"

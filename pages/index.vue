@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-center">
+  <div class="d-flex justify-center" style="padding-top: 100px;">
     <div style="min-height: 100vh; width: 100%; max-width: 1440px">
       <v-row>
         <v-col cols="6" sm="4" md="2" v-for="item in total">
@@ -32,10 +32,11 @@
               <v-chip color="red" size="small" class="mt-1">Tag</v-chip>
             </div>
             <div class="d-flex justify-space-between w-100 mt-1">
-                <span style="text-decoration: line-through; color: gray">1,999,000₮</span>
-                <span>1,599,000₮</span>
+              <span style="text-decoration: line-through; color: gray"
+                >1,999,000₮</span
+              >
+              <span>1,599,000₮</span>
             </div>
-
           </v-card>
         </v-col>
       </v-row>
@@ -43,37 +44,11 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useRuntimeConfig } from "#app";
 import axios from "axios";
 
-export default {
-  data() {
-    return {
-      items: [],
-      baseUrl: "",
-      total: 6,
-    };
-  },
-  methods: {
-    async getData() {
-      try {
-        const response = await axios.get(
-          `${this.baseUrl}/products/category/jewelery`
-        );
-        if (response.status === 200) {
-          console.log("boljiin");
-        } else {
-          console.log("jiijii");
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    },
-  },
-  async mounted() {
-    this.baseUrl = useRuntimeConfig().public.baseURL;
-    await this.getData();
-  },
-};
+const baseUrl = useRuntimeConfig().public.baseURL;
+const total = ref<any>(10);
+
 </script>
