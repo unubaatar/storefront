@@ -1,19 +1,22 @@
 <script setup lang="ts">
+const layout = "layout";
 import Footer from './Layouts/footer.vue';
-import Header from './Layouts/header.vue';
+
 </script>
 
 <template>
 
-  <NuxtLayout >
-    <Header ></Header>
-    <NuxtPage />
-    <Footer></Footer>
-  </NuxtLayout>
+<NuxtLayout>
+      <NuxtPage />
+</NuxtLayout>
+<Footer></Footer>
 
 </template>
 
-<style>
+<script lang="ts" setup>
+</script>
+
+<style >
 @import url('https://fonts.googleapis.com/css2?family=Commissioner:wght@100..900&display=swap');
 
 * {
@@ -23,6 +26,6 @@ import Header from './Layouts/header.vue';
 }
 
 body {
-  background-color: 	#f8f8f8;
+  background-color:#E8E8E8;
 }
 </style>

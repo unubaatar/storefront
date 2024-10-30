@@ -1,11 +1,9 @@
 <template>
-    <div>
+    <v-layout>
       <v-card
         style="
           width: 100%;
           height: 80px;
-          border-bottom-left-radius: 36px;
-          border-bottom-right-radius: 36px;
           position: fixed;
           z-index: 10;
         "
@@ -16,13 +14,7 @@
         >
           <div class="d-flex align-center">
             <v-btn
-              elevation="0"
-              style="background-color: #e5e4e2 !important"
-              rounded="pill"
-              class="mr-2"
-              ><v-icon>mdi-shape-outline</v-icon><span>Category</span></v-btn
-            >
-            <v-btn
+            @click="goSearch()"
               elevation="0"
               style="background-color: #e5e4e2 !important"
               rounded="pill"
@@ -58,7 +50,22 @@
           </div>
         </div>
       </v-card>
-    </div>
+      <v-main>
+      <slot class="py-8" />
+    </v-main>
+    </v-layout>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+definePageMeta({
+
+});
+
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const goSearch = () => {
+  router.push("/search");
+}
+</script>

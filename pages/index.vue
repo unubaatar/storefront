@@ -4,6 +4,7 @@
       <v-row>
         <v-col cols="6" sm="4" md="2" v-for="item in total">
           <v-card
+            @click="goToProductDetail()"
             rounded="xl"
             elevation="0"
             class="pa-4"
@@ -45,10 +46,20 @@
 </template>
 
 <script lang="ts" setup>
+definePageMeta({
+  layout: "layout",
+});
+
 import { useRuntimeConfig } from "#app";
 import axios from "axios";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const baseUrl = useRuntimeConfig().public.baseURL;
 const total = ref<any>(10);
 
+const goToProductDetail = () => {
+  router.push("/product/id");
+}
 </script>
