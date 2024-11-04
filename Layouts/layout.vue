@@ -1,5 +1,6 @@
 <template>
     <v-layout>
+
       <v-card
         style="
           width: 100%;
@@ -18,12 +19,12 @@
               elevation="0"
               style="background-color: #e5e4e2 !important"
               rounded="pill"
-              ><v-icon>mdi-magnify</v-icon><span>Search</span></v-btn
+              ><v-icon>mdi-magnify</v-icon><span>Хайх</span></v-btn
             >
           </div>
 
           <div>
-            <div style="font-size: 28px">Ecommerce</div>
+            <div style="font-size: 28px; cursor: pointer;" @click="goHome()">Ecommerce</div>
           </div>
 
           <div class="d-flex align-center">
@@ -50,6 +51,8 @@
           </div>
         </div>
       </v-card>
+
+      
       <v-main>
       <slot class="py-8" />
     </v-main>
@@ -64,6 +67,10 @@ definePageMeta({
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const goHome = () => {
+  router.push("/");
+}
 
 const goSearch = () => {
   router.push("/search");
