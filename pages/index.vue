@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="6" sm="4" md="2" v-for="product in products">
           <v-card
-            @click="goToProductDetail()"
+            @click="goToProductDetail(product._id)"
             rounded="xl"
             elevation="0"
             class="pa-4"
@@ -30,7 +30,7 @@
             />
             <div>{{ product.name }}</div>
             <div>
-              <v-chip color="red" size="small" class="mt-1">{{ product.taxon.name }}</v-chip>
+              <v-chip color="red" size="small" class="mt-1">{{ product.category.name }}</v-chip>
             </div>
             <div class="d-flex justify-space-between w-100 mt-1">
               <span style="text-decoration: line-through; color: gray"
@@ -78,7 +78,7 @@ const getProducts = async() => {
 onMounted(async() => {
   await getProducts();
 })
-const goToProductDetail = () => {
-  router.push("/product/id");
+const goToProductDetail = (_id: any) => {
+  router.push(`/product/${_id}`);
 }
 </script>

@@ -28,4 +28,28 @@ import Footer from './Layouts/footer.vue';
 body {
   background-color:#E8E8E8;
 }
+
+::-webkit-scrollbar {
+  width: 12px;  
+  height: 12px; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #888; 
+  border-radius: 8px; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px; 
+}
+
+::-webkit-scrollbar {
+  border-radius: 8px; 
+}
+
 </style>

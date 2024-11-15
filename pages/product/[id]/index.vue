@@ -22,21 +22,29 @@
               >
             </div>
             <div>
-              <div style="font-size: 24px; font-weight: bold">Product name</div>
-              <div style="font-size: 14px; line-height: 1">Product Variant</div>
+              <div style="font-size: 24px; font-weight: bold">
+                {{ product.name }}
+              </div>
+              <div style="font-size: 14px; line-height: 1">
+                {{ selectedVariant?.name }}
+              </div>
             </div>
           </div>
           <img
             class="mt-8"
-            style="width: 75%; object-fit: cover"
-            src="https://cdn.zochil.shop/dbbe75f0-0390-456e-85a8-187ded3983b6_t700.jpg"
+            style="width: 75%; object-fit: cover; max-height: 500px"
+            :src="
+              selectedVariant.images
+                ? selectedVariant.images[0]
+                : selectedVariant.thumbnails
+            "
             alt=""
           />
         </v-col>
         <v-col cols="12" md="6">
           <div class="pa-8">
-            <div class="d-flex align-center  justify-space-between w-100">
-              <v-card
+            <div class="d-flex align-center justify-space-between w-100">
+              <!-- <v-card
                 style="width: 50%; min-width: 300px; border: 1px #e8e8e8 solid"
                 class="pa-2 px-4"
                 rounded="lg"
@@ -87,39 +95,71 @@
                     </div>
                   </div>
                 </Countdown>
-              </v-card>
+              </v-card> -->
               <img
-                style="height: 32px"
-                src="https://www.shutterstock.com/image-vector/galati-romania-april-29-2023-600nw-2295394661.jpg"
+                v-if="product.brand"
+                style="height: 32px; border-radius: 50%"
+                :src="product.brand.image"
                 alt=""
               />
             </div>
 
-            <div class="mt-4">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Praesentium esse maiores est iure laborum harum aperiam incidunt doloribus. Odio id ratione mollitia modi pariatur voluptates velit, ut sed impedit, doloribus harum ipsum.</div>
+            <div class="mt-4">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+              Praesentium esse maiores est iure laborum harum aperiam incidunt
+              doloribus. Odio id ratione mollitia modi pariatur voluptates
+              velit, ut sed impedit, doloribus harum ipsum.
+            </div>
 
             <div class="d-flex justify-space-between mt-6">
               <section>
-                <div style="font-weight: 500">Хямдарсан үнэ</div>
+                <div style="font-weight: 500">
+                  {{
+                    selectedVariant.sellPrice ? "Хямдарсан үнэ" : "Үндсэн үнэ"
+                  }}
+                </div>
                 <div class="d-flex align-center">
                   <span style="font-size: 32px; font-weight: 600"
-                    >39,900 ₮ </span
+                    >{{ selectedVariant?.sellPrice?.toLocaleString() }} ₮ </span
                   ><v-chip
+                    v-if="selectedVariant.sellPrice"
                     color="#ff6166"
                     style="border: 2px solid #ff6166; font-weight: bold"
                     class="ml-4"
                     rounded="lg"
                     variant="outlined"
                     size="small"
-                    >-50.06%</v-chip
+                  >
+                    {{
+                      (
+                        100 -
+                        (selectedVariant.sellPrice / selectedVariant.price) *
+                          100
+                      ).toFixed(1)
+                    }}
+                    %</v-chip
                   >
                 </div>
-                <div style="font-size: 14px; color: gray">
-                  Хэмнэлт: <span class="ml-4"> 40,000 ₮</span>
+                <div
+                  v-if="selectedVariant.sellPrice"
+                  style="font-size: 14px; color: gray"
+                >
+                  Хэмнэлт:
+                  <span class="ml-4">
+                    {{
+                      (
+                        selectedVariant?.price - selectedVariant?.sellPrice
+                      )?.toLocaleString()
+                    }}
+                    ₮</span
+                  >
                 </div>
               </section>
 
               <section>
-                <div style="font-weight: 500">Анхны үнэ</div>
+                <div style="font-weight: 500">
+                  {{ selectedVariant.sellPrice ? " Анхны үнэ" : "" }}
+                </div>
                 <div
                   style="
                     font-size: 24px;
@@ -127,13 +167,14 @@
                     text-decoration: line-through;
                   "
                 >
-                  79,900 ₮
+                  {{ selectedVariant?.price?.toLocaleString() }} ₮
                 </div>
               </section>
             </div>
 
             <v-row class="mt-2">
               <v-btn-toggle
+              v-if="product?.variants?.length > 0"
                 selected-class="selectedClass"
                 v-model="defaultIndex"
                 mandatory
@@ -142,14 +183,15 @@
               >
                 <v-btn
                   class="mr-4 my-2"
-                  v-for="button in buttons"
+                  v-for="variant in product.variants"
+                  @click="selectedVariant = variant"
                   style="
                     height: 32px;
                     border: 2px solid gray;
                     border-radius: 8px !important;
                   "
                   variant="outlined"
-                  >{{ button.name }}</v-btn
+                  >{{ variant?.name }}</v-btn
                 >
               </v-btn-toggle>
             </v-row>
@@ -203,12 +245,18 @@ definePageMeta({
   layout: "layout",
 });
 
-
-import { useRouter } from 'vue-router';
+import axios from "axios";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
+const route = useRoute();
 
+const baseUrl = useRuntimeConfig().public.baseURL;
+const product = ref<any>({});
 const defaultIndex = ref<any>(0);
+const selectedVariant = ref<any>({});
+
 const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const buttons = [
   {
@@ -226,9 +274,35 @@ const buttons = [
 ];
 
 const goBack = () => {
-    router.back();
-}
+  router.back();
+};
 
+const fetchProduct = async () => {
+  try {
+    const _id = route.params.id;
+    const query = {
+      _id: _id,
+    };
+    const response = await axios.post(`${baseUrl}/products/getById`, query);
+    if (response.status === 200) {
+      product.value = response.data;
+      if(product.value.variants?.length > 0) {
+        selectedVariant.value = product.value.variants[0];
+      } else {
+        selectedVariant.value = product.value;
+      }
+
+    } else {
+      console.log("jiiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+onMounted(async () => {
+  await fetchProduct();
+});
 </script>
 
 <style scoped>
