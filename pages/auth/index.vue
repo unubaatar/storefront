@@ -34,6 +34,10 @@ import axios from "axios";
 import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 
+definePageMeta({
+  middleware: "login"
+})
+
 const baseUrl = useRuntimeConfig().public.baseURL;
 
 const customer = ref<any>({});
