@@ -94,16 +94,16 @@
                   {{ item?.variant?.name }}
                 </p>
                 <p
-                  style="
-                    color: gray;
-                    text-decoration: line-through;
-                    font-size: 13px;
+                  :style="
+                    item?.salePrice
+                      ? 'color: gray; text-decoration: line-through; font-size: 13px;'
+                      : 'font-size: 20px'
                   "
                   class="pt-4"
                 >
                   {{ item?.price?.toLocaleString() }}₮
                 </p>
-                <p style="font-size: 20px">
+                <p v-if="item?.salePrice" style="font-size: 20px">
                   {{ item?.salePrice?.toLocaleString() }}₮
                 </p>
               </div>
@@ -150,10 +150,16 @@
           <hr class="my-4" />
         </div>
         <section class="mt-12 d-flex justify-space-between align-center">
-          <div>Нийт үнийн дүн : <span class="ml-2" style="font-size: 20px; font-weight: 550;">{{ sum.toLocaleString() }} ₮</span></div>
-          <v-btn     color="#ec2a45">Үргэлжлүүлэх</v-btn>
+          <div>
+            Нийт үнийн дүн :
+            <span class="ml-2" style="font-size: 20px; font-weight: 550"
+              >{{ sum.toLocaleString() }} ₮</span
+            >
+          </div>
+          <v-btn color="#ec2a45" @click="router.push('/order')"
+            >Үргэлжлүүлэх</v-btn
+          >
         </section>
-       
       </v-container>
     </v-navigation-drawer>
 
@@ -178,11 +184,16 @@ const count = ref<any>();
 
 const sum = computed(() => {
   let total = 0;
-  for(let item of cartItems.value) {
-    total += item?.salePrice * item?.qty;
+  for (let item of cartItems.value) {
+    if (item.salePrice) {
+      total += item?.salePrice * item?.qty;
+    } else {
+      total += item?.price * item?.qty;
+    }
   }
   return total;
-})
+});
+
 const goHome = () => {
   router.push("/");
 };
@@ -237,37 +248,37 @@ const fetchCartItems = async () => {
   }
 };
 
-const addCount = async(item: any) => {
+const addCount = async (item: any) => {
   try {
-    if(item.qty < 10) {
+    if (item.qty < 10) {
       item.qty += 1;
     }
-    const response = await axios.post(`${baseUrl}/cartItems/update` , item);
-    if(response.status === 200) {
+    const response = await axios.post(`${baseUrl}/cartItems/update`, item);
+    if (response.status === 200) {
       console.log("boljiin");
     } else {
       console.log("jiji");
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
-const minusCount = async(item: any) => {
+const minusCount = async (item: any) => {
   try {
-    if(item.qty > 0) {
+    if (item.qty > 0) {
       item.qty -= 1;
     }
-    const response = await axios.post(`${baseUrl}/cartItems/update` , item);
-    if(response.status === 200) {
+    const response = await axios.post(`${baseUrl}/cartItems/update`, item);
+    if (response.status === 200) {
       console.log("boljiin");
     } else {
       console.log("jiji");
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
 const logOut = () => {
   localStorage.removeItem("customerId");

@@ -243,6 +243,7 @@
                   elevation="0"
                   color="#ff6166"
                   height="60"
+                  @click="orderItems()"
                   >Захиалах</v-btn
                 >
               </v-col>
@@ -278,6 +279,15 @@ const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const goBack = () => {
   router.back();
 };
+
+const orderItems = async() => {
+  try {
+    await addItemToProduct();
+    router.push("/order");
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 const addItemToProduct = async() => {
   try {
