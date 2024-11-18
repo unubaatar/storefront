@@ -49,7 +49,7 @@ const login = async() => {
     const response = await axios.post(`${baseUrl}/customers/login` , customer.value);
     if(response.status === 200) {
       toast.success("Амжилттай");
-      localStorage.setItem("customerId" , response.data);
+      localStorage.setItem("customerId" , response.data.customer);
       router.push("/");
     } else {  
       console.log("jiijii");

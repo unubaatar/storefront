@@ -270,7 +270,7 @@ const goBack = () => {
 const addItemToProduct = async() => {
   try {
     const query = {
-      customer: "673712ceac68ec3dff5d0610",
+      customer: localStorage.getItem("customerId"),
       product: product.value._id,
       variant: selectedVariant.value._id,
       qty: count.value,
@@ -279,7 +279,7 @@ const addItemToProduct = async() => {
     };
     const response = await axios.post(`${baseUrl}/cartItems/create` , query);
     if(response.status === 201) {
-      console.log("boljinn");
+      toast.success("Амжилттай нэмлээ");
     } else {
       console.log("jiji");
     }
@@ -314,6 +314,7 @@ const fetchProduct = async () => {
 onMounted(async () => {
   await fetchProduct();
 });
+
 </script>
 
 <style scoped>
