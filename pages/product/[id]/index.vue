@@ -201,6 +201,7 @@
                 <v-select
                   label="Тоо ширхэг"
                   variant="outlined"
+                  v-model="count"
                   hide-details
                   :items="counts"
                 ></v-select
@@ -229,6 +230,7 @@
                   elevation="0"
                   color="#ff6166"
                   height="60"
+                  @click="addItemToProduct()"
                   >Захиалах</v-btn
                 >
               </v-col>
@@ -248,6 +250,8 @@ definePageMeta({
 import axios from "axios";
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
 
 const router = useRouter();
 const route = useRoute();
@@ -255,27 +259,34 @@ const route = useRoute();
 const baseUrl = useRuntimeConfig().public.baseURL;
 const product = ref<any>({});
 const defaultIndex = ref<any>(0);
+const count = ref<any>(1  );
 const selectedVariant = ref<any>({});
 
 const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const buttons = [
-  {
-    name: "btn1",
-  },
-  { name: "btn2" },
-  { name: "btn3" },
-  { name: "btn4" },
-  { name: "btn2" },
-  { name: "btn3" },
-  { name: "btn4" },
-  { name: "btn2" },
-  { name: "btn3" },
-  { name: "btn4" },
-];
-
 const goBack = () => {
   router.back();
 };
+
+const addItemToProduct = async() => {
+  try {
+    const query = {
+      customer: "673712ceac68ec3dff5d0610",
+      product: product.value._id,
+      variant: selectedVariant.value._id,
+      qty: count.value,
+      salePrice: selectedVariant.value.sellPrice,
+      price:  selectedVariant.value.price
+    };
+    const response = await axios.post(`${baseUrl}/cartItems/create` , query);
+    if(response.status === 201) {
+      console.log("boljinn");
+    } else {
+      console.log("jiji");
+    }
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 const fetchProduct = async () => {
   try {

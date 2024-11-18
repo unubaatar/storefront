@@ -65,7 +65,7 @@
         <v-row class="mt-4">
           <v-col cols="12" sm="6" md="3" xl="2" v-for="product in products">
             <v-card
-              @click="moveToProduct"
+              @click="moveToProduct(product._id)"
               rounded="xl"
               elevation="0"
               class="pa-4"
@@ -128,8 +128,8 @@ const baseUrl = useRuntimeConfig().public.baseURL;
 const categories = ref<any>([]);
 const products = ref<any>([]);
 
-const moveToProduct = () => {
-  router.push("/product/id");
+const moveToProduct = (_id :any) => {
+  router.push(`/product/${_id}`);
 };
 const goBack = () => {
   router.back();
