@@ -6,8 +6,8 @@ export default defineNuxtConfig({
   css: ["./asset/css/font.css"],
   runtimeConfig: {
     public: {
-      baseURL: "http://localhost:4004/api",
-      // baseURL: "http://172.20.10.3:4004/api"
+      // baseURL: "http://localhost:4004/api",
+      baseURL: "http://13.231.156.66:4004/api"
     },
   },
 });
