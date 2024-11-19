@@ -210,16 +210,29 @@
             </v-row>
 
             <v-row class="mt-4">
-              <v-col cols="6">
+              <v-col cols="3">
                 <v-btn
                   style="font-size: 18px"
-                  color="#757575"
+                  block
+                  variant="outlined"
+                  color="#ff6166"
+                  elevation="0"
+                  hide-details
+                  height="60"
+                  @click="addItemToProduct()"
+                  ><v-icon>mdi-cart</v-icon></v-btn
+                >
+              </v-col>
+              <v-col cols="3">
+                <v-btn
+                  style="font-size: 18px"
+                  color="#ff6166"
                   block
                   variant="outlined"
                   elevation="0"
                   hide-details
                   height="60"
-                  >Сагсанд нэмэх</v-btn
+                  ><v-icon>mdi-heart-outline</v-icon></v-btn
                 >
               </v-col>
               <v-col cols="6">
@@ -230,7 +243,7 @@
                   elevation="0"
                   color="#ff6166"
                   height="60"
-                  @click="addItemToProduct()"
+                  @click="orderItems()"
                   >Захиалах</v-btn
                 >
               </v-col>
@@ -267,8 +280,21 @@ const goBack = () => {
   router.back();
 };
 
+const orderItems = async() => {
+  try {
+    await addItemToProduct();
+    router.push("/order");
+  } catch(err) {
+    console.log(err);
+  }
+}
+
 const addItemToProduct = async() => {
   try {
+    if(!localStorage.getItem("customerId")) {
+      router.push("/auth");
+      return;
+    }
     const query = {
       customer: localStorage.getItem("customerId"),
       product: product.value._id,

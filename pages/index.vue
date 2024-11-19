@@ -34,9 +34,9 @@
             </div>
             <div class="d-flex justify-space-between w-100 mt-1">
               <span style="text-decoration: line-through; color: gray"
-                >{{ product.price.toLocaleString()   }}₮</span
+                >{{ product?.price?.toLocaleString()   }}₮</span
               >
-              <span>{{ product.sellPrice.toLocaleString()  }}₮</span>
+              <span>{{ product?.sellPrice?.toLocaleString()  }}₮</span>
             </div>
           </v-card>
         </v-col>

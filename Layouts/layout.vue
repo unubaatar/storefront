@@ -24,36 +24,50 @@
         <div class="d-flex align-center">
           <div>
             <v-btn
+              elevation="0"
+              rounded="xl"
               v-if="!customerId"
               variant="text"
               @click="router.push('/auth')"
               >Нэвтрэх</v-btn
             >
           </div>
-          <div v-if="customerId" class="mx-2">
+          <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
             <v-icon style="font-size: 28px; cursor: pointer"
               >mdi-heart-outline</v-icon
             >
-          </div>
-          <div @click="showCartDetails()" v-if="customerId" class="mx-2">
+          </v-btn>
+          <v-btn
+            elevation="0"
+            rounded="xl"
+            @click="showCartDetails()"
+            v-if="customerId"
+            class="mx-2"
+          >
             <v-icon style="font-size: 28px; cursor: pointer"
               >mdi-cart-variant</v-icon
             >
-          </div>
-          <div v-if="customerId" class="mx-2">
+          </v-btn>
+          <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
             <v-icon style="font-size: 28px; cursor: pointer"
               >mdi-account</v-icon
             >
-          </div>
-          <div @click="logOut()" v-if="customerId" class="mx-2">
+          </v-btn>
+          <v-btn
+            elevation="0"
+            rounded="xl"
+            @click="logOut()"
+            v-if="customerId"
+            class="mx-2"
+          >
             <v-icon style="font-size: 28px; cursor: pointer">mdi-logout</v-icon>
-          </div>
+          </v-btn>
         </div>
       </div>
     </v-card>
 
     <v-navigation-drawer
-      width="500"
+      width="550"
       v-model="showCart"
       location="right"
       temporary
@@ -80,16 +94,16 @@
                   {{ item?.variant?.name }}
                 </p>
                 <p
-                  style="
-                    color: gray;
-                    text-decoration: line-through;
-                    font-size: 13px;
+                  :style="
+                    item?.salePrice
+                      ? 'color: gray; text-decoration: line-through; font-size: 13px;'
+                      : 'font-size: 20px'
                   "
                   class="pt-4"
                 >
                   {{ item?.price?.toLocaleString() }}₮
                 </p>
-                <p style="font-size: 20px">
+                <p v-if="item?.salePrice" style="font-size: 20px">
                   {{ item?.salePrice?.toLocaleString() }}₮
                 </p>
               </div>
@@ -115,6 +129,7 @@
                     size="small"
                     icon="mdi-minus"
                     variant="text"
+                    @click="minusCount(item)"
                   ></v-btn>
                   <span class="px-5">
                     {{ item.qty }}
@@ -125,6 +140,7 @@
                     size="small"
                     icon="mdi-plus"
                     color="#ec2a45"
+                    @click="addCount(item)"
                   ></v-btn>
                 </div>
               </div>
@@ -133,6 +149,17 @@
 
           <hr class="my-4" />
         </div>
+        <section class="mt-12 d-flex justify-space-between align-center">
+          <div>
+            Нийт үнийн дүн :
+            <span class="ml-2" style="font-size: 20px; font-weight: 550"
+              >{{ sum.toLocaleString() }} ₮</span
+            >
+          </div>
+          <v-btn color="#ec2a45" @click="router.push('/order')"
+            >Үргэлжлүүлэх</v-btn
+          >
+        </section>
       </v-container>
     </v-navigation-drawer>
 
@@ -155,6 +182,18 @@ const showCart = ref<any>(false);
 const cartItems = ref<any>([]);
 const count = ref<any>();
 
+const sum = computed(() => {
+  let total = 0;
+  for (let item of cartItems.value) {
+    if (item.salePrice) {
+      total += item?.salePrice * item?.qty;
+    } else {
+      total += item?.price * item?.qty;
+    }
+  }
+  return total;
+});
+
 const goHome = () => {
   router.push("/");
 };
@@ -172,22 +211,22 @@ const showCartDetails = async () => {
   }
 };
 
-const deleteCartItem = async(_id: any) => {
+const deleteCartItem = async (_id: any) => {
   try {
     const query = {
-      _id: _id
+      _id: _id,
     };
-    const response = await axios.post(`${baseUrl}/cartItems/delete` , query);
-    if(response.status == 200) {
+    const response = await axios.post(`${baseUrl}/cartItems/delete`, query);
+    if (response.status == 200) {
       console.log("boljiinnn");
       await fetchCartItems();
     } else {
       console.log("jiijii");
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
 const fetchCartItems = async () => {
   try {
@@ -203,6 +242,38 @@ const fetchCartItems = async () => {
       count.value = response.data.count;
     } else {
       console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const addCount = async (item: any) => {
+  try {
+    if (item.qty < 10) {
+      item.qty += 1;
+    }
+    const response = await axios.post(`${baseUrl}/cartItems/update`, item);
+    if (response.status === 200) {
+      console.log("boljiin");
+    } else {
+      console.log("jiji");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const minusCount = async (item: any) => {
+  try {
+    if (item.qty > 0) {
+      item.qty -= 1;
+    }
+    const response = await axios.post(`${baseUrl}/cartItems/update`, item);
+    if (response.status === 200) {
+      console.log("boljiin");
+    } else {
+      console.log("jiji");
     }
   } catch (err) {
     console.log(err);
