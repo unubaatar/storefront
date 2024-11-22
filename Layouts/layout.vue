@@ -82,7 +82,7 @@
               <div>
                 <img
                   style="width: 100px; height: 100px"
-                  :src="item.image"
+                  :src="item?.variant ? item?.variant?.images[0] : item?.product?.thumbnails[0]"
                   alt=""
                 />
               </div>

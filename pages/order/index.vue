@@ -6,11 +6,67 @@
       style="max-width: 1440px; background-color: #e8e8e8; min-height: 80vh"
       class="w-100 pa-8 pb-16 my-6"
     >
-      <div style="font-size: 24px; font-weight: 500">Сагс</div>
-      <div class="mb-4">Нийт {{ count }} бүтээгдхүүн</div>
+      <section class="w-100 d-flex justify-center">
+        <div class="d-flex align-center mb-4">
+          <v-btn
+            :variant="stepCounter > 0 ? 'flat' : 'outlined'"
+            elevation="0"
+            style="
+              width: 48px;
+              height: 48px;
+              border: 2px solid #ec2a45;
+              font-size: 20px;
+            "
+            rounded="pill"
+            color="#ec2a45"
+          >
+            1</v-btn
+          >
+          <div
+            style="height: 2px; width: 72px; background-color: #ec2a45"
+          ></div>
+          <v-btn
+            :variant="stepCounter > 1 ? 'flat' : 'outlined'"
+            elevation="0"
+            style="
+              width: 48px;
+              height: 48px;
+              border: 2px solid #ec2a45;
+              font-size: 20px;
+            "
+            rounded="pill"
+            color="#ec2a45"
+            >2</v-btn
+          >
+          <div
+            style="height: 2px; width: 72px; background-color: #ec2a45"
+          ></div>
+          <v-btn
+            :variant="stepCounter > 2 ? 'flat' : 'outlined'"
+            elevation="0"
+            style="
+              width: 48px;
+              height: 48px;
+              border: 2px solid #ec2a45;
+              font-size: 20px;
+            "
+            rounded="pill"
+            color="#ec2a45"
+            >3</v-btn
+          >
+        </div>
+      </section>
+
+      <div v-if="stepCounter === 1" style="font-size: 24px; font-weight: 500">
+        Сагс
+      </div>
+      <div v-if="stepCounter === 1" class="mb-4">
+        Нийт {{ count }} бүтээгдхүүн
+      </div>
       <v-row>
         <v-col cols="8">
           <v-card
+            v-if="stepCounter === 1"
             v-for="item in cartItems"
             class="pa-4 mb-4"
             rounded="lg"
@@ -87,6 +143,54 @@
                 </div>
               </div>
             </section>
+          </v-card>
+
+          <v-card
+            v-if="stepCounter === 2"
+            class="pa-6"
+            rounded="lg"
+            elevation="0"
+          >
+            <div style="font-size: 20px" class="w-100 text-center">
+              Захиалагчийн мэдээлэл
+            </div>
+            <v-row class="mt-2">
+              <v-col cols="12" md="6">
+                <v-text-field
+                  :disabled="customer.lastname"
+                  v-model="customer.lastname"
+                  label="Овог"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  :disabled="customer.firstname"
+                  v-model="customer.firstname"
+                  label="Нэр"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  :disabled="customer.phone"
+                  v-model="customer.phone"
+                  label="Утасны дугаар"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  :disabled="customer.email"
+                  v-model="customer.email"
+                  label="Email"
+                  variant="outlined"
+                ></v-text-field>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
         <v-col cols="4">
@@ -170,12 +274,31 @@
             </div>
           </v-card>
           <div class="mt-6 w-100 d-flex justify-end">
-            <v-btn color="#ec2a45" class="mr-4" variant="outlined"
+            <v-btn
+              v-if="stepCounter !== 1"
+              @click="goPrevStep()"
+              color="#ec2a45"
+              class="mr-4"
+              variant="outlined"
               ><v-icon>mdi-chevron-left</v-icon></v-btn
             >
-            <v-btn rounded="lg" color="#ec2a45" elevation="0"
+            <v-btn
+              v-if="stepCounter !== 2"
+              @click="goNextStep()"
+              rounded="lg"
+              color="#ec2a45"
+              elevation="0"
               >Үргэлжүүлэх</v-btn
             >
+            <v-btn
+              rounded="lg"
+              color="#ec2a45"
+              elevation="0"
+              v-if="stepCounter == 2"
+              @click="createOrder()"
+            >
+              Үүсгэх
+            </v-btn>
           </div>
         </v-col>
       </v-row>
@@ -198,7 +321,8 @@ const router = useRouter();
 const route = useRoute();
 const cartItems = ref<any>([]);
 const count = ref<any>();
-const stepCounter = ref<any>();
+const stepCounter = ref<any>(1);
+const customer = ref<any>({});
 
 const baseUrl = useRuntimeConfig().public.baseURL;
 
@@ -234,6 +358,37 @@ const fetchCartItems = async () => {
     if (response.status === 200) {
       cartItems.value = response.data.rows;
       count.value = response.data.count;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getCostumerData = async () => {
+  try {
+    const query = { customerId: localStorage.getItem("customerId") };
+    const response = await axios.post(`${baseUrl}/customers/getById`, query);
+    if (response.status === 200) {
+      customer.value = response.data;
+    } else {
+    }
+    console.log("jiijii");
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const createOrder = async () => {
+  try {
+    const query = {
+      items: cartItems.value,
+      customer: customer.value,
+    };
+    const response = await axios.post(`${baseUrl}/orders/create`, query);
+    if (response.status === 201) {
+      toast.success("Амжилттай үүслээ");
     } else {
       console.log("jiijii");
     }
@@ -291,8 +446,19 @@ const minusCount = async (item: any) => {
   }
 };
 
+const goNextStep = () => {
+  stepCounter.value++;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+const goPrevStep = () => {
+  stepCounter.value--;
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
 onMounted(async () => {
   await fetchCartItems();
+  await getCostumerData();
 });
 </script>
 

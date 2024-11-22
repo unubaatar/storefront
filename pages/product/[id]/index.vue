@@ -40,7 +40,7 @@
             "
             alt=""
           />
-        </v-col>
+        </v-col>  
         <v-col cols="12" md="6">
           <div class="pa-8">
             <div class="d-flex align-center justify-space-between w-100">
@@ -120,10 +120,15 @@
                 </div>
                 <div class="d-flex align-center">
                   <span style="font-size: 32px; font-weight: 600"
-                    >{{ selectedVariant?.sellPrice?.toLocaleString() }} ₮ </span
+                    >{{
+                      selectedVariant.sellPrice
+                        ? selectedVariant?.sellPrice?.toLocaleString()
+                        : selectedVariant?.price?.toLocaleString()
+                    }}
+                    ₮ </span
                   ><v-chip
                     v-if="selectedVariant.sellPrice"
-                    color="#ff6166"
+                    color="#ec2a45"
                     style="border: 2px solid #ff6166; font-weight: bold"
                     class="ml-4"
                     rounded="lg"
@@ -156,7 +161,7 @@
                 </div>
               </section>
 
-              <section>
+              <section   v-if="selectedVariant.sellPrice">
                 <div style="font-weight: 500">
                   {{ selectedVariant.sellPrice ? " Анхны үнэ" : "" }}
                 </div>
@@ -174,7 +179,7 @@
 
             <v-row class="mt-2">
               <v-btn-toggle
-              v-if="product?.variants?.length > 0"
+                v-if="product?.variants?.length > 0"
                 selected-class="selectedClass"
                 v-model="defaultIndex"
                 mandatory
@@ -215,7 +220,7 @@
                   style="font-size: 18px"
                   block
                   variant="outlined"
-                  color="#ff6166"
+                  color="#ec2a45"
                   elevation="0"
                   hide-details
                   height="60"
@@ -226,7 +231,7 @@
               <v-col cols="3">
                 <v-btn
                   style="font-size: 18px"
-                  color="#ff6166"
+                  color="#ec2a45"
                   block
                   variant="outlined"
                   elevation="0"
@@ -241,7 +246,7 @@
                   hide-details
                   block
                   elevation="0"
-                  color="#ff6166"
+                  color="#ec2a45"
                   height="60"
                   @click="orderItems()"
                   >Захиалах</v-btn
@@ -272,7 +277,7 @@ const route = useRoute();
 const baseUrl = useRuntimeConfig().public.baseURL;
 const product = ref<any>({});
 const defaultIndex = ref<any>(0);
-const count = ref<any>(1  );
+const count = ref<any>(1);
 const selectedVariant = ref<any>({});
 
 const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -280,18 +285,18 @@ const goBack = () => {
   router.back();
 };
 
-const orderItems = async() => {
+const orderItems = async () => {
   try {
     await addItemToProduct();
     router.push("/order");
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
-const addItemToProduct = async() => {
+const addItemToProduct = async () => {
   try {
-    if(!localStorage.getItem("customerId")) {
+    if (!localStorage.getItem("customerId")) {
       router.push("/auth");
       return;
     }
@@ -301,18 +306,18 @@ const addItemToProduct = async() => {
       variant: selectedVariant.value._id,
       qty: count.value,
       salePrice: selectedVariant.value.sellPrice,
-      price:  selectedVariant.value.price
+      price: selectedVariant.value.price,
     };
-    const response = await axios.post(`${baseUrl}/cartItems/create` , query);
-    if(response.status === 201) {
+    const response = await axios.post(`${baseUrl}/cartItems/create`, query);
+    if (response.status === 201) {
       toast.success("Амжилттай нэмлээ");
     } else {
       console.log("jiji");
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
 const fetchProduct = async () => {
   try {
@@ -323,12 +328,11 @@ const fetchProduct = async () => {
     const response = await axios.post(`${baseUrl}/products/getById`, query);
     if (response.status === 200) {
       product.value = response.data;
-      if(product.value.variants?.length > 0) {
+      if (product.value.variants?.length > 0) {
         selectedVariant.value = product.value.variants[0];
       } else {
         selectedVariant.value = product.value;
       }
-
     } else {
       console.log("jiiijii");
     }
@@ -340,7 +344,6 @@ const fetchProduct = async () => {
 onMounted(async () => {
   await fetchProduct();
 });
-
 </script>
 
 <style scoped>
