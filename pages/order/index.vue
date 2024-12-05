@@ -190,6 +190,43 @@
                   variant="outlined"
                 ></v-text-field>
               </v-col>
+
+              <v-col cols="12" md="6">
+                <v-select
+                  v-model="address.state"
+                  :items="states"
+                  label="Хот/Аймаг"
+                  variant="outlined"
+                >
+                </v-select>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="address.district"
+                  label="Дүүрэг/Сум"
+                  variant="outlined"
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="address.street"
+                  label="Хаяг"
+                  variant="outlined"
+                >
+                </v-text-field>
+              </v-col>
+
+              <v-col cols="12" md="6">
+                <v-text-field
+                  v-model="address.note"
+                  label="Тэмдэглэл"
+                  variant="outlined"
+                >
+                </v-text-field>
+              </v-col>
             </v-row>
           </v-card>
         </v-col>
@@ -323,8 +360,29 @@ const cartItems = ref<any>([]);
 const count = ref<any>();
 const stepCounter = ref<any>(1);
 const customer = ref<any>({});
+const address = ref<any>({});
 
 const baseUrl = useRuntimeConfig().public.baseURL;
+
+const states = ref<any>([
+  "Архангай",
+  "Баянхонгор",
+  "Булган",
+  "Дархан-Уул",
+  "Дорнод",
+  "Дорноговь",
+  "Дундговь",
+  "Говьсүмбэр",
+  "Хэнтий",
+  "Ховд",
+  "Хөвсгөл",
+  "Орхон",
+  "Өвөрхангай",
+  "Сэлэнгэ",
+  "Төв",
+  "Увс",
+  "Завхан",
+]);
 
 const sum = computed(() => {
   let total = 0;
@@ -366,6 +424,22 @@ const fetchCartItems = async () => {
   }
 };
 
+const getStates = async () => {
+  try {
+    const query = {
+      ping: "blabla",
+    };
+    const response = await axios.post(`${baseUrl}/customers/states`, query);
+    if (response.status === 200) {
+      states.value = response.data;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const getCostumerData = async () => {
   try {
     const query = { customerId: localStorage.getItem("customerId") };
@@ -385,10 +459,12 @@ const createOrder = async () => {
     const query = {
       items: cartItems.value,
       customer: customer.value,
+      address: address.value
     };
     const response = await axios.post(`${baseUrl}/orders/create`, query);
     if (response.status === 201) {
       toast.success("Амжилттай үүслээ");
+      router.push(`/order/${response.data._id}`);
     } else {
       console.log("jiijii");
     }
@@ -459,6 +535,7 @@ const goPrevStep = () => {
 onMounted(async () => {
   await fetchCartItems();
   await getCostumerData();
+  await getStates();
 });
 </script>
 

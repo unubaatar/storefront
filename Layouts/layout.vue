@@ -32,11 +32,11 @@
               >Нэвтрэх</v-btn
             >
           </div>
-          <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
+          <!-- <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
             <v-icon style="font-size: 28px; cursor: pointer"
               >mdi-heart-outline</v-icon
             >
-          </v-btn>
+          </v-btn> -->
           <v-btn
             elevation="0"
             rounded="xl"
@@ -48,11 +48,6 @@
               >mdi-cart-variant</v-icon
             >
           </v-btn>
-          <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
-            <v-icon style="font-size: 28px; cursor: pointer"
-              >mdi-account</v-icon
-            >
-          </v-btn>
           <v-btn
             elevation="0"
             rounded="xl"
@@ -61,6 +56,12 @@
             class="mx-2"
           >
             <v-icon style="font-size: 28px; cursor: pointer">mdi-logout</v-icon>
+          </v-btn>
+
+          <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
+            <v-icon style="font-size: 28px; cursor: pointer"
+              >mdi-account</v-icon
+            >
           </v-btn>
         </div>
       </div>
