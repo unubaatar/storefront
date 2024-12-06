@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-center" style="padding-top: 100px;">
+  <div class="d-flex justify-center" style="padding-top: 100px; padding-bottom: 50px;">
     <div style="min-height: 100vh; width: 100%; max-width: 1440px">
       <v-row>
         <v-col cols="6" sm="4" md="2" v-for="product in products">
@@ -63,7 +63,7 @@ const productsCount = ref<any>(0);
 
 const getProducts = async() => {
   try {
-    const response = await axios.post(`${baseUrl}/products/list` , {});
+    const response = await axios.post(`${baseUrl}/products/getAll` , {});
     if(response.status === 200) {
       productsCount.value = response.data.count;
       products.value = response.data.rows;
