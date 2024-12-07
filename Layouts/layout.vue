@@ -121,7 +121,7 @@
 
               <div>
                 <div
-                  class="pa-1"
+                  class="pa-1 d-flex"
                   style="background-color: #f2f2f2; border-radius: 16px"
                 >
                   <v-btn
