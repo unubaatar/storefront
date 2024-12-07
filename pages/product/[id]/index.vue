@@ -40,7 +40,7 @@
             "
             alt=""
           />
-        </v-col>  
+        </v-col>
         <v-col cols="12" md="6">
           <div class="pa-8">
             <div class="d-flex align-center justify-space-between w-100">
@@ -161,7 +161,7 @@
                 </div>
               </section>
 
-              <section   v-if="selectedVariant.sellPrice">
+              <section v-if="selectedVariant.sellPrice">
                 <div style="font-weight: 500">
                   {{ selectedVariant.sellPrice ? " Анхны үнэ" : "" }}
                 </div>
@@ -257,77 +257,141 @@
         </v-col>
       </v-row>
 
-      <div class="mt-12 d-flex justify-center w-100" style="font-size: 24px; font-weight: 500;">Төстэй бүтээгдхүүнүүд</div>
+      <div
+        class="mt-12 d-flex justify-center w-100"
+        style="font-size: 24px; font-weight: 500"
+      >
+        Төстэй бүтээгдхүүнүүд
+      </div>
 
-
-      
-    <v-row class="pt-6">
-      <v-col v-for="product in similiarProducts"  md="3" cols="12">
-        <v-card
-              @click="moveToProduct(product._id)"
-              rounded="xl"
-              elevation="2"
-              class="pa-4"
-              style="cursor: pointer"
+      <v-row class="pt-6">
+        <v-col v-for="product in similiarProducts" md="3" cols="12">
+          <v-card
+            @click="moveToProduct(product._id)"
+            rounded="xl"
+            elevation="2"
+            class="pa-4"
+            style="cursor: pointer"
+          >
+            <div
+              style="height: 32px"
+              class="w-100 d-flex justify-space-between"
             >
-              <div
-                style="height: 32px"
-                class="w-100 d-flex justify-space-between"
+              <v-chip
+                size="small"
+                v-if="product?.sellPrice"
+                color="green"
+                variant="flat"
+                >{{
+                  (100 - (product?.sellPrice / product?.price) * 100).toFixed(1)
+                }}
+                %</v-chip
               >
-                <v-chip
-                  size="small"
-                  v-if="product?.sellPrice"
-                  color="green"
-                  variant="flat"
-                  >{{
-                    (100 - (product?.sellPrice / product?.price) * 100).toFixed(
-                      1
-                    )
-                  }}
-                  %</v-chip
-                >
-                <div>
-                  <img
-                    v-if="product.brand"
-                    style="height: 24px; border-radius: 50%"
-                    :src="product.brand.image"
-                    alt=""
-                  />
-                </div>
-              </div>
-              <img
-                :src="
-                  product.thumbnails
-                    ? product.thumbnails[0]
-                    : 'https://www.bell.ca/Styles/wireless/iphone_16_pro_max/iPhone_16_Pro_Max_Desert_Titanium_lrg3.png'
-                "
-                alt=""
-                style="width: 100%; height: 240px; object-fit: cover"
-              />
-              <div>{{ product?.name }}</div>
               <div>
-                <v-chip color="red" size="small" class="mt-1">{{
-                  product.category.name
-                }}</v-chip>
+                <img
+                  v-if="product.brand"
+                  style="height: 24px; border-radius: 50%"
+                  :src="product.brand.image"
+                  alt=""
+                />
               </div>
-              <div class="d-flex justify-space-between w-100 mt-1">
-                <span
-                  :style="
-                    product?.sellPrice
-                      ? 'text-decoration: line-through; color: gray'
-                      : 'font-weight: 500; font-size: 20px;'
-                  "
-                  >{{ product?.price?.toLocaleString() }}₮</span
-                >
-                <span
-                  v-if="product?.sellPrice"
-                  style="font-weight: 500; font-size: 20px"
-                  >{{ product?.sellPrice?.toLocaleString() }}₮</span
-                >
+            </div>
+            <img
+              :src="
+                product.thumbnails
+                  ? product.thumbnails[0]
+                  : 'https://www.bell.ca/Styles/wireless/iphone_16_pro_max/iPhone_16_Pro_Max_Desert_Titanium_lrg3.png'
+              "
+              alt=""
+              style="width: 100%; height: 240px; object-fit: cover"
+            />
+            <div>{{ product?.name }}</div>
+            <div>
+              <v-chip color="red" size="small" class="mt-1">{{
+                product.category.name
+              }}</v-chip>
+            </div>
+            <div class="d-flex justify-space-between w-100 mt-1">
+              <span
+                :style="
+                  product?.sellPrice
+                    ? 'text-decoration: line-through; color: gray'
+                    : 'font-weight: 500; font-size: 20px;'
+                "
+                >{{ product?.price?.toLocaleString() }}₮</span
+              >
+              <span
+                v-if="product?.sellPrice"
+                style="font-weight: 500; font-size: 20px"
+                >{{ product?.sellPrice?.toLocaleString() }}₮</span
+              >
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <div
+        class="mt-12 d-flex justify-center w-100"
+        style="font-size: 24px; font-weight: 500"
+      >
+        Сэтгэгдэлүүд
+      </div>
+      <v-row>
+        <v-col class="mt-4">
+          <v-card class="pa-6" elevation="0" rounded="lg">
+            <div>
+              <div class="mb-2 ml-2">
+                <v-chip> {{ customer.email }}</v-chip>
               </div>
-            </v-card>
-      </v-col>
-    </v-row>
+
+              <article class="d-flex align-center">
+                <v-text-field
+                  v-model="comment"
+                  style="max-width: 400px"
+                  label="Сэтгэгдэл нэмэх"
+                  hide-details
+                  variant="outlined"
+                ></v-text-field>
+
+                <div class="my-4 pl-12">
+                  <span class="mr-4" style="font-size: 24px">Үнэлгээ:</span>
+                  <v-btn-toggle v-model="rating" selected-class="selectedClass">
+                    <v-btn
+                      v-for="item in ratingValues"
+                      class="mx-2"
+                      icon=""
+                      style="border: 1px solid gray; border-radius: 50%"
+                      variant="outlined"
+                    >
+                      {{ item }}</v-btn
+                    ></v-btn-toggle
+                  >
+                </div>
+
+                <v-btn
+                  @click="addReview()"
+                  :disabled="checkDisable()"
+                  class="ml-8"
+                  color="#ec2a45"
+                  >Илгээх <v-icon class="ml-4"> mdi-send</v-icon>
+                </v-btn>
+              </article>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col v-for="review in reviews" md="6" cols="12">
+          <v-card class="pa-4" rounded="lg" variant="outlined">
+            <div class="mb-2 d-flex justify-space-between" style="font-size: 20px; font-weight: 500;">
+              <p style="font-size: 16px; color: gray; font-weight: 400;">{{ review?.customer?.email }}</p>
+              <p style="color: black;"> <span style="color: #ec2a45;"> {{ review?.rating }}</span> / 5</p>
+            </div>
+            <div>{{ review?.comment }}</div>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-card>
   </div>
 </template>
@@ -352,8 +416,14 @@ const defaultIndex = ref<any>(0);
 const count = ref<any>(1);
 const selectedVariant = ref<any>({});
 const similiarProducts = ref<any>([]);
+const customer = ref<any>({});
+const comment = ref<any>("");
+const rating = ref<any>(-1);
+const reviews = ref<any>([]);
 
 const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+const ratingValues = [1, 2, 3, 4, 5];
 const goBack = () => {
   router.back();
 };
@@ -367,21 +437,24 @@ const orderItems = async () => {
   }
 };
 
-const fetchSimiliarProducts = async() => {
+const fetchSimiliarProducts = async () => {
   try {
     const query = {
-      productId: product.value._id
+      productId: product.value._id,
     };
-    const response = await axios.post(`${baseUrl}/products/getSimiliarProducts` , query);
-    if(response.status === 200) {
+    const response = await axios.post(
+      `${baseUrl}/products/getSimiliarProducts`,
+      query
+    );
+    if (response.status === 200) {
       similiarProducts.value = response.data;
     } else {
       console.log("jiijii");
     }
-  } catch(err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
 const addItemToProduct = async () => {
   try {
@@ -430,6 +503,68 @@ const fetchProduct = async () => {
   }
 };
 
+const addReview = async () => {
+  try {
+    const query = {
+      comment: comment.value,
+      rating: rating.value + 1,
+      product: product.value._id,
+      customer: localStorage.getItem("customerId"),
+    };
+
+    const response = await axios.post(`${baseUrl}/reviews/create`, query);
+    if (response.status === 201) {
+      toast("Амжилттай нэмэгдлээ");
+      comment.value = "";
+      rating.value = -1;
+      await fetchReviews();
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const fetchReviews = async () => {
+  try {
+    const query = {
+      productId: route.params.id,
+    };
+    const response = await axios.post(`${baseUrl}/reviews/getByProduct`, query);
+    if (response.status === 200) {
+      reviews.value = response.data;
+    } else {
+      console.log("jiijii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getUserData = async () => {
+  try {
+    const query = {
+      customerId: localStorage.getItem("customerId"),
+    };
+    const response = await axios.post(`${baseUrl}/customers/getById`, query);
+    if (response.status === 200) {
+      customer.value = response.data;
+    } else {
+      console.log("jiijiii");
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const checkDisable = () => {
+  if (!comment.value || rating.value === -1) {
+    return true;
+  }
+  return false;
+};
+
 const moveToProduct = (_id: any) => {
   router.push(`/product/${_id}`);
 };
@@ -437,6 +572,8 @@ const moveToProduct = (_id: any) => {
 onMounted(async () => {
   await fetchProduct();
   await fetchSimiliarProducts();
+  await getUserData();
+  await fetchReviews();
 });
 </script>
 
