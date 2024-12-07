@@ -218,3 +218,5 @@ onMounted(async () => {
   await fetchOrders();
 });
 </script>
+
+<style scoped></style>

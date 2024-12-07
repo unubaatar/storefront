@@ -180,7 +180,7 @@
             <v-row class="mt-2">
               <v-btn-toggle
                 v-if="product?.variants?.length > 0"
-                selected-class="selectedClass"
+                selected-class="selectedClassButton"
                 v-model="defaultIndex"
                 mandatory
                 class="px-4 h-auto"
@@ -224,7 +224,7 @@
                   elevation="0"
                   hide-details
                   height="60"
-                  @click="addItemToProduct()"
+                  @click="addItemToCart()"
                   ><v-icon>mdi-cart</v-icon></v-btn
                 >
               </v-col>
@@ -355,7 +355,7 @@
 
                 <div class="my-4 pl-12">
                   <span class="mr-4" style="font-size: 24px">Үнэлгээ:</span>
-                  <v-btn-toggle v-model="rating" selected-class="selectedClass">
+                  <v-btn-toggle v-model="rating" selected-class="selectedClassButton">
                     <v-btn
                       v-for="item in ratingValues"
                       class="mx-2"
@@ -430,7 +430,7 @@ const goBack = () => {
 
 const orderItems = async () => {
   try {
-    await addItemToProduct();
+    await addItemToCart();
     router.push("/order");
   } catch (err) {
     console.log(err);
@@ -456,7 +456,7 @@ const fetchSimiliarProducts = async () => {
   }
 };
 
-const addItemToProduct = async () => {
+const addItemToCart = async () => {
   try {
     if (!localStorage.getItem("customerId")) {
       router.push("/auth");
@@ -578,7 +578,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.selectedClass {
+.selectedClassButton {
   background-color: #ff6166 !important;
   color: white !important;
   border: 2px solid #ff6166 !important;
