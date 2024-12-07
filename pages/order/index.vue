@@ -385,25 +385,29 @@ const states = ref<any>([
   "Завхан",
 ]);
 
-const sum = computed(() => {
-  let total = 0;
-  for (let item of cartItems.value) {
-    if (item.salePrice) {
-      total += item?.salePrice * item?.qty;
-    } else {
-      total += item?.price * item?.qty;
-    }
-  }
-  return total;
-});
+const sum = computed(() => cartItems.value.reduce((total : any, item: any) => {
+  return total + (item.salePrice ? item.salePrice * item.qty : item.price * item.qty);
+}, 0));
 
 const totalPrice = computed(() => {
   let total = 0;
-  for (let item of cartItems.value) {
-    total += item.price * item.qty;
+  const length = cartItems.value.length;
+
+  let i = 0;
+  for (; i + 3 < length; i += 4) {
+    total += cartItems.value[i].price * cartItems.value[i].qty;
+    total += cartItems.value[i + 1].price * cartItems.value[i + 1].qty;
+    total += cartItems.value[i + 2].price * cartItems.value[i + 2].qty;
+    total += cartItems.value[i + 3].price * cartItems.value[i + 3].qty;
   }
+
+  for (; i < length; i++) {
+    total += cartItems.value[i].price * cartItems.value[i].qty;
+  }
+
   return total;
 });
+
 
 const fetchCartItems = async () => {
   try {
