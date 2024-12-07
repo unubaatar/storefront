@@ -89,11 +89,13 @@
 </template>
 
 <script setup lang="ts">
+// definePageMeta нь nuxt.js дээр хуудасны setup-г бэлдэж өгдөг  
 definePageMeta({
-  layout: "layout",
-  middleware: "auth",
+  layout: "layout", // хуудас руу хандахад ашиглах layout-н нэр 
+  middleware: "auth", // хуудас руу хандахад ашиглах middlware-н нэр
 });
 
+// Ашиглагдах модулиудыг оруулсан байдал
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
@@ -101,16 +103,19 @@ import { toast } from "vue3-toastify";
 import "vue3-toastify/dist/index.css";
 import moment from "moment";
 
-const baseUrl = useRuntimeConfig().public.baseURL;
-const router = useRouter();
+// Ашиглагдах хувьсагчдыг зарласан байдал 
+const baseUrl = useRuntimeConfig().public.baseURL; // useRuntimeConfig ашиглан framework-н config дээр буй хувьсагчдыг авдаг. 
+const router = useRouter(); 
 const route = useRoute();
 
 const order = ref<any>({});
 
+// Захиалгын дэлгэрэнгүй мэдээллийг авах функц
 const fetchOrderData = async () => {
   const query = {
     _id: route.params._id,
   };
+  // axios ашиглан api-руу хандан data-г авсан 
   const response = await axios.post(`${baseUrl}/orders/getById`, query);
   if (response.status === 200) {
     order.value = response.data;
