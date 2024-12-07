@@ -1,5 +1,5 @@
 <template>
-  <div style="padding-top: 80px; height: 80vh;" class="w-100 d-flex justify-center " >
+  <div style="padding-top: 80px; min-height: 80vh;" class="w-100 d-flex justify-center " >
     <div style="width: 100%; max-width: 1440px">
       <v-row class="my-16">
         <v-col cols="3">
