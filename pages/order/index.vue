@@ -346,6 +346,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "layout",
+  middleware: "auth"
 });
 
 import axios from "axios";
