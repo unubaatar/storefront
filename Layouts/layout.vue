@@ -73,7 +73,7 @@
               </v-btn></template
             >
             <v-list>
-              <v-list-item @click="router.push('customer')">
+              <v-list-item @click="router.push('/customer')">
                 <v-icon class="mr-2">mdi-account</v-icon> Хэрэглэгч</v-list-item
               >
               <!-- <v-list-item>Таалагдсан бараанууд</v-list-item> -->
