@@ -256,6 +256,78 @@
           </div>
         </v-col>
       </v-row>
+
+      <div class="mt-12 d-flex justify-center w-100" style="font-size: 24px; font-weight: 500;">Төстэй бүтээгдхүүнүүд</div>
+
+
+      
+    <v-row class="pt-6">
+      <v-col v-for="product in similiarProducts"  md="3" cols="12">
+        <v-card
+              @click="moveToProduct(product._id)"
+              rounded="xl"
+              elevation="2"
+              class="pa-4"
+              style="cursor: pointer"
+            >
+              <div
+                style="height: 32px"
+                class="w-100 d-flex justify-space-between"
+              >
+                <v-chip
+                  size="small"
+                  v-if="product?.sellPrice"
+                  color="green"
+                  variant="flat"
+                  >{{
+                    (100 - (product?.sellPrice / product?.price) * 100).toFixed(
+                      1
+                    )
+                  }}
+                  %</v-chip
+                >
+                <div>
+                  <img
+                    v-if="product.brand"
+                    style="height: 24px; border-radius: 50%"
+                    :src="product.brand.image"
+                    alt=""
+                  />
+                </div>
+              </div>
+              <img
+                :src="
+                  product.thumbnails
+                    ? product.thumbnails[0]
+                    : 'https://www.bell.ca/Styles/wireless/iphone_16_pro_max/iPhone_16_Pro_Max_Desert_Titanium_lrg3.png'
+                "
+                alt=""
+                style="width: 100%; height: 240px; object-fit: cover"
+              />
+              <div>{{ product?.name }}</div>
+              <div>
+                <v-chip color="red" size="small" class="mt-1">{{
+                  product.category.name
+                }}</v-chip>
+              </div>
+              <div class="d-flex justify-space-between w-100 mt-1">
+                <span
+                  :style="
+                    product?.sellPrice
+                      ? 'text-decoration: line-through; color: gray'
+                      : 'font-weight: 500; font-size: 20px;'
+                  "
+                  >{{ product?.price?.toLocaleString() }}₮</span
+                >
+                <span
+                  v-if="product?.sellPrice"
+                  style="font-weight: 500; font-size: 20px"
+                  >{{ product?.sellPrice?.toLocaleString() }}₮</span
+                >
+              </div>
+            </v-card>
+      </v-col>
+    </v-row>
     </v-card>
   </div>
 </template>
@@ -279,6 +351,7 @@ const product = ref<any>({});
 const defaultIndex = ref<any>(0);
 const count = ref<any>(1);
 const selectedVariant = ref<any>({});
+const similiarProducts = ref<any>([]);
 
 const counts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const goBack = () => {
@@ -293,6 +366,22 @@ const orderItems = async () => {
     console.log(err);
   }
 };
+
+const fetchSimiliarProducts = async() => {
+  try {
+    const query = {
+      productId: product.value._id
+    };
+    const response = await axios.post(`${baseUrl}/products/getSimiliarProducts` , query);
+    if(response.status === 200) {
+      similiarProducts.value = response.data;
+    } else {
+      console.log("jiijii");
+    }
+  } catch(err) {
+    console.log(err);
+  }
+}
 
 const addItemToProduct = async () => {
   try {
@@ -341,8 +430,13 @@ const fetchProduct = async () => {
   }
 };
 
+const moveToProduct = (_id: any) => {
+  router.push(`/product/${_id}`);
+};
+
 onMounted(async () => {
   await fetchProduct();
+  await fetchSimiliarProducts();
 });
 </script>
 
