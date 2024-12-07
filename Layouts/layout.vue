@@ -48,7 +48,7 @@
               >mdi-cart-variant</v-icon
             >
           </v-btn>
-          <v-btn
+          <!-- <v-btn
             elevation="0"
             rounded="xl"
             @click="logOut()"
@@ -56,13 +56,32 @@
             class="mx-2"
           >
             <v-icon style="font-size: 28px; cursor: pointer">mdi-logout</v-icon>
-          </v-btn>
+          </v-btn> -->
 
-          <v-btn elevation="0" rounded="xl" v-if="customerId" class="mx-2">
-            <v-icon style="font-size: 28px; cursor: pointer"
-              >mdi-account</v-icon
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn
+                v-bind="props"
+                elevation="0"
+                rounded="xl"
+                v-if="customerId"
+                class="mx-2"
+              >
+                <v-icon style="font-size: 28px; cursor: pointer"
+                  >mdi-account</v-icon
+                >
+              </v-btn></template
             >
-          </v-btn>
+            <v-list>
+              <v-list-item @click="router.push('customer')">
+                <v-icon class="mr-2">mdi-account</v-icon> Хэрэглэгч</v-list-item
+              >
+              <!-- <v-list-item>Таалагдсан бараанууд</v-list-item> -->
+              <v-list-item @click="logOut()">
+                <v-icon class="mr-2">mdi-logout</v-icon>Гарах</v-list-item
+              >
+            </v-list>
+          </v-menu>
         </div>
       </div>
     </v-card>
@@ -83,7 +102,11 @@
               <div>
                 <img
                   style="width: 100px; height: 100px"
-                  :src="item?.variant ? item?.variant?.images[0] : item?.product?.thumbnails[0]"
+                  :src="
+                    item?.variant
+                      ? item?.variant?.images[0]
+                      : item?.product?.thumbnails[0]
+                  "
                   alt=""
                 />
               </div>

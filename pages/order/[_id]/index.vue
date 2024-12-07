@@ -1,5 +1,8 @@
 <template>
-  <div style="padding-top: 80px; min-height: 80vh;" class="w-100 d-flex justify-center " >
+  <div
+    style="padding-top: 80px; min-height: 80vh"
+    class="w-100 d-flex justify-center"
+  >
     <div style="width: 100%; max-width: 1440px">
       <v-row class="my-16">
         <v-col cols="3">
@@ -54,20 +57,29 @@
               {{ order.orderNumber }}
             </div>
 
-            <v-row class="mt-4" style="font-size: 20px;" >
-                <v-col cols="3">Захиалагч:</v-col>
-                <v-col cols="9">{{ order?.customer?.firstname }} {{ order?.customer?.lastname }}</v-col>
-                <v-col cols="3">Аймаг/Хот:</v-col>
-                <v-col cols="3" >{{ order?.address?.state }}</v-col>
-                <v-col cols="3">Сум/Дүүрэг:</v-col>
-                <v-col cols="3" >{{ order?.address?.district }}</v-col>
-                <v-col cols="3">Гудамж:</v-col>
-                <v-col cols="9" >{{ order?.address?.street }}</v-col>
-                
-                <v-col cols="3">Захиалгын төлөв:</v-col>
-                <v-col cols="9">{{ order?.orderStatus }}</v-col>
-                <v-col cols="3">Огноо: </v-col>
-                <v-col cols="9"  style="font-size: 16px; color: gray;">{{ moment(order.createdAt).format("YYYY-MM-DD HH:mm:SS") }}</v-col>
+            <v-row class="mt-4" style="font-size: 20px">
+              <v-col cols="3">Захиалагч:</v-col>
+              <v-col cols="9"
+                >{{ order?.customer?.firstname }}
+                {{ order?.customer?.lastname }}</v-col
+              >
+              <v-col cols="3">Аймаг/Хот:</v-col>
+              <v-col cols="3">{{ order?.address?.state }}</v-col>
+              <v-col cols="3">Сум/Дүүрэг:</v-col>
+              <v-col cols="3">{{ order?.address?.district }}</v-col>
+              <v-col cols="3">Гудамж:</v-col>
+              <v-col cols="9">{{ order?.address?.street }}</v-col>
+
+              <v-col cols="3">Захиалгын төлөв:</v-col>
+              <v-col cols="9">
+                <v-chip size="small" variant="flat" :color="formatStatesColor(order?.orderStatus)">
+                  {{ formatStates(order?.orderStatus) }}
+                </v-chip></v-col
+              >
+              <v-col cols="3">Огноо: </v-col>
+              <v-col cols="9" style="font-size: 16px; color: gray">{{
+                moment(order.createdAt).format("YYYY-MM-DD HH:mm:SS")
+              }}</v-col>
             </v-row>
           </v-card>
         </v-col>
@@ -79,7 +91,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: "layout",
-  middleware: "auth"
+  middleware: "auth",
 });
 
 import { ref, onMounted } from "vue";
@@ -106,6 +118,33 @@ const fetchOrderData = async () => {
     console.log("jiijii");
   }
 };
+
+const formatStates = (item: any) => {
+  switch (item) {
+    case "pending":
+      return "Хүлээгдэж буй";
+    case "shipped":
+      return "Хүрэгэлтэнд";
+    case "complete":
+      return "Дууссан";
+    case "cancelled":
+      return "Цуцалсан";
+  }
+};
+
+const formatStatesColor = (item: any) => {
+  switch (item) {
+    case "pending":
+      return "yellow";
+    case "shipped":
+      return "blue";
+    case "complete":
+      return "green";
+    case "cancelled":
+      return "red";
+  }
+};
+
 onMounted(async () => {
   await fetchOrderData();
 });
